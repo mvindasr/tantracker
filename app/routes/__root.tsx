@@ -5,6 +5,7 @@ import {
   HeadContent,
   Scripts,
   Link,
+  useNavigate,
 } from "@tanstack/react-router";
 import appCss from "../app.css?url";
 import poppins100 from "@fontsource/poppins/100.css?url";
@@ -16,7 +17,7 @@ import poppins600 from "@fontsource/poppins/600.css?url";
 import poppins700 from "@fontsource/poppins/700.css?url";
 import poppins800 from "@fontsource/poppins/800.css?url";
 import poppins900 from "@fontsource/poppins/900.css?url";
-import { ChartColumnIcon } from "lucide-react";
+import { ChartColumnBigIcon, ChartColumnIcon } from "lucide-react";
 import {
   ClerkProvider,
   SignedIn,
@@ -81,6 +82,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const navigate = useNavigate();
   return (
     <ClerkProvider>
       <html>
@@ -113,7 +115,19 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
                     },
                   },
                 }}
-              />
+              >
+                <UserButton.MenuItems>
+                  <UserButton.Action
+                    label="Dashboard"
+                    labelIcon={<ChartColumnBigIcon size={16} />}
+                    onClick={() => {
+                      navigate({
+                        to: "/dashboard",
+                      });
+                    }}
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
             </SignedIn>
           </div>
         </nav>
