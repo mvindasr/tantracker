@@ -21,15 +21,16 @@ import { Button } from "./ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { Input } from "./ui/input";
+import { categoriesTable } from "@/db/schema";
 
-const transactionFormSchema = z.object({
+export const transactionFormSchema = z.object({
   transactionType: z.enum(["income", "expense"]),
   categoryId: z.coerce.number().positive("Please select a category"),
   transactionDate: z
     .date()
-    .max(new Date(), "Transaction date cannot be in the future"),
+    .max(addDays(new Date(), 1), "Transaction date cannot be in the future"),
   amount: z.coerce.number().positive("Amount must be greater then 0"),
   description: z
     .string()
@@ -37,7 +38,14 @@ const transactionFormSchema = z.object({
     .max(300, "Description must contain a maximum of 300 characters"),
 });
 
-export function TransactionForm() {
+export function TransactionForm({
+  categories,
+  onSubmit,
+}: {
+  categories: (typeof categoriesTable.$inferSelect)[];
+  onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void>;
+}) {
+  // inferSelect includes the id (inferInset does not)
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
@@ -49,13 +57,13 @@ export function TransactionForm() {
     },
   });
 
-  const handleSubmit = (data: z.infer<typeof transactionFormSchema>) => {
-    console.log({ data });
-  };
+  const filteredCategories = categories.filter(
+    (cat) => cat.type === form.getValues("transactionType")
+  );
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <fieldset
           disabled={form.formState.isSubmitting}
           className="grid grid-cols-2 gap-y-5 gap-x-2"
@@ -99,7 +107,16 @@ export function TransactionForm() {
                       <SelectTrigger>
                         <SelectValue placeholder="Category" />
                       </SelectTrigger>
-                      <SelectContent></SelectContent>
+                      <SelectContent>
+                        {filteredCategories.map((category) => (
+                          <SelectItem
+                            key={category.id}
+                            value={category.id.toString()}
+                          >
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
                   </FormControl>
                   <FormMessage />
