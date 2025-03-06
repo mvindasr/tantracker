@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { AllTransactions } from "./-all-transactions";
+import { getTransactionYearsRange } from "@/data/getTransactionYearsRange";
 
 const today = new Date();
 const searchSchema = z.object({
@@ -31,7 +32,9 @@ export const Route = createFileRoute(
     };
   },
   loader: async ({ deps }) => {
+    const yearsRange = await getTransactionYearsRange();
     return {
+      yearsRange,
       month: deps.month,
       year: deps.year,
     };
@@ -40,6 +43,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   // We can return from loaderDeps and use Route.useLoaderDeps instead
-  const { month, year } = Route.useLoaderData();
-  return <AllTransactions month={month} year={year} />;
+  const { month, year, yearsRange } = Route.useLoaderData();
+  return <AllTransactions month={month} year={year} yearsRange={yearsRange} />;
 }
