@@ -28,6 +28,7 @@ import {
 } from "@clerk/tanstack-start";
 import { Button } from "@/components/ui/button";
 import { getSignedInUserId } from "@/data/getSignedInUserId";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createRootRoute({
   notFoundComponent() {
@@ -133,6 +134,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             </div>
           </nav>
           {children}
+          <Toaster />
           <Scripts />
         </body>
       </html>
