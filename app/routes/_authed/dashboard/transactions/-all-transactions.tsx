@@ -16,7 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
+
 import { format } from "date-fns";
 import { PencilIcon } from "lucide-react";
 import numeral from "numeral";
@@ -41,6 +42,7 @@ export function AllTransactions({
   month: number;
   year: number;
 }) {
+  const router = useRouter();
   const [selectedMonth, setSelectedMonth] = useState(month);
   const [selectedYear, setSelectedYear] = useState(year);
   const selectedDate = new Date(year, month - 1, 1);
@@ -143,8 +145,21 @@ export function AllTransactions({
                       variant="outline"
                       size="icon"
                       aria-label="Edit transaction"
+                      asChild
                     >
-                      <PencilIcon />
+                      <Link
+                        onClick={() => {
+                          router.clearCache({
+                            filter: (route) =>
+                              route.pathname !==
+                              `/dashboard/transactions/${transaction.id}`,
+                          });
+                        }}
+                        to={`/dashboard/transactions/$transactionId`}
+                        params={{ transactionId: transaction.id.toString() }}
+                      >
+                        <PencilIcon />
+                      </Link>
                     </Button>
                   </TableCell>
                 </TableRow>

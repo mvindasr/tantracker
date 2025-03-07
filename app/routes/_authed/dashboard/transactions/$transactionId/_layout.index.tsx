@@ -3,40 +3,54 @@ import {
   transactionFormSchema,
 } from "@/components/transaction-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createTransaction } from "@/data/createTransaction";
-import { getCategories } from "@/data/getCategories";
+import { getCategories, getTransaction, updateTransaction } from "@/data";
+
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { z } from "zod";
 
 export const Route = createFileRoute(
-  "/_authed/dashboard/transactions/new/_layout/"
+  "/_authed/dashboard/transactions/$transactionId/_layout/"
 )({
   component: RouteComponent,
-  loader: async () => {
-    const categories = await getCategories();
+  errorComponent: () => {
+    return (
+      <div className="text-3xl text-muted-foreground py-10">
+        Oops! Transaction not found.
+      </div>
+    );
+  },
+  loader: async ({ params }) => {
+    const [categories, transaction] = await Promise.all([
+      getCategories(),
+      getTransaction({
+        data: { transactionId: Number(params.transactionId) },
+      }),
+    ]);
     return {
+      transaction,
       categories,
     };
   },
 });
 
 function RouteComponent() {
-  const { categories } = Route.useLoaderData();
   const navigate = useNavigate();
+  const { categories, transaction } = Route.useLoaderData();
   const handleSubmit = async (data: z.infer<typeof transactionFormSchema>) => {
-    const transaction = await createTransaction({
+    await updateTransaction({
       data: {
+        id: transaction.id,
         amount: data.amount,
+        transactionDate: format(data.transactionDate, "yyyy-MM-dd"),
         categoryId: data.categoryId,
         description: data.description,
-        transactionDate: format(data.transactionDate, "yyyy-MM-dd"),
       },
     });
 
     toast.message("Success!", {
-      description: "Transaction created",
+      description: "Transaction updated",
       closeButton: true,
       classNames: {
         toast: "!bg-green-600 !text-white !border-green-600",
@@ -55,13 +69,27 @@ function RouteComponent() {
       },
     });
   };
+
   return (
     <Card className="max-w-screen-md mt-4">
       <CardHeader>
-        <CardTitle>New Transaction</CardTitle>
+        <CardTitle>Edit transaction</CardTitle>
       </CardHeader>
       <CardContent>
-        <TransactionForm categories={categories} onSubmit={handleSubmit} />
+        <TransactionForm
+          categories={categories}
+          onSubmit={handleSubmit}
+          defaultValues={{
+            amount: Number(transaction.amount),
+            categoryId: transaction.categoryId,
+            description: transaction.description,
+            transactionDate: new Date(transaction.transactionDate),
+            transactionType:
+              categories.find(
+                (category) => category.id === transaction.categoryId
+              )?.type ?? "income",
+          }}
+        />
       </CardContent>
     </Card>
   );
