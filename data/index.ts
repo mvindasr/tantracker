@@ -4,3 +4,4 @@ export * from "./createTransaction";
 export * from "./getCategories";
 export * from "./getTransaction";
 export * from "./updateTransaction";
+export * from "./deleteTransaction";
