@@ -88,7 +88,7 @@ export function AllTransactions({
                 to="/dashboard/transactions"
                 search={{
                   month: selectedMonth,
-                  year: 2025,
+                  year: selectedYear,
                 }}
               >
                 Go

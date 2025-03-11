@@ -6,3 +6,4 @@ export * from "./getTransaction";
 export * from "./updateTransaction";
 export * from "./deleteTransaction";
 export * from "./getRecentTransactions";
+export * from "./getAnnualCashflow";

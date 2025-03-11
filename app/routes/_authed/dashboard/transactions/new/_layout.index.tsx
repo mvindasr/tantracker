@@ -26,7 +26,7 @@ function RouteComponent() {
   const { categories } = Route.useLoaderData();
   const navigate = useNavigate();
   const handleSubmit = async (data: z.infer<typeof transactionFormSchema>) => {
-    const transaction = await createTransaction({
+    await createTransaction({
       data: {
         amount: data.amount,
         categoryId: data.categoryId,

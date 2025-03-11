@@ -11,7 +11,7 @@ const transactionSchema = z.object({
     const parsedDate = new Date(value);
     return !isNaN(parsedDate.getTime()) && parsedDate <= addDays(new Date(), 1);
   }),
-  amount: z.coerce.number().positive("Amount must be greater then 0"),
+  amount: z.coerce.number().positive("Amount must be greater than 0"),
   description: z
     .string()
     .min(3, "Description must be at least 3 characters")
@@ -40,5 +40,6 @@ export const createTransaction = createServerFn({
         transactionDate: data.transactionDate,
       })
       .returning();
+
     return transaction;
   });
