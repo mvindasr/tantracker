@@ -112,6 +112,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
                   showName
                   appearance={{
                     elements: {
+                      userButtonAvatarBox: {
+                        border: "1px solid white",
+                      },
                       userButtonOuterIdentifier: {
                         color: "white",
                       },

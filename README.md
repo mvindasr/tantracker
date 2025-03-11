@@ -12,7 +12,7 @@
 
 ---
 
-**TanTracker** is a powerful and user-friendly income and expense tracking application designed to help users manage their finances efficiently. With TanTracker, users can log their income and expenses, view detailed reports, and manage their accounts with ease. The application leverages modern web development technologies to provide a seamless and responsive user experience.
+**TanTracker** is a user-friendly income and expense tracking application designed to help users manage their finances efficiently. With TanTracker, users can log their income and expenses, view detailed reports, and manage their accounts with ease. The application leverages modern web development technologies to provide a seamless and responsive user experience.
 
 ![TanTracker Screenshot](./public/assets/TanTracker.png)
 
