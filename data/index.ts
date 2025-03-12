@@ -7,3 +7,4 @@ export * from "./updateTransaction";
 export * from "./deleteTransaction";
 export * from "./getRecentTransactions";
 export * from "./getAnnualCashflow";
+export * from "./translations";

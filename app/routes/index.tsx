@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import cover from "@/public/assets/cover.webp";
-import { ChartColumnBigIcon } from "lucide-react";
+import cover from "@/public/assets/appBg.png";
 import {
   SignedIn,
   SignedOut,
@@ -8,6 +7,8 @@ import {
   SignUpButton,
 } from "@clerk/tanstack-start";
 import { Button } from "@/components/ui/button";
+import { translations } from "@/data";
+import logo from "@/public/assets/recetarioLogo.png";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -21,23 +22,26 @@ function RouteComponent() {
         alt=""
         className="absolute top-0 left-0 object-cover object-center size-full opacity-50"
       />
-      <div className="flex flex-col text-center relative z-10 gap-4">
-        <h1 className="text-5xl font-bold flex gap-1 items-center">
-          <ChartColumnBigIcon size={60} className="text-lime-500" /> TanTracker
+      <div className="flex flex-col items-center justify-center relative z-10 gap-5">
+        <h1 className="text-5xl font-bold flex gap-1 items-center pe-16">
+          <img src={logo} alt="Logo" className="h-24 pe-2" />{" "}
+          {translations.appName}
         </h1>
-        <p className="text-2xl">Track your finances with ease</p>
+        <p className="text-2xl w-96 text-center">
+          {translations.appDescription}
+        </p>
         <SignedIn>
           <Button asChild size="lg">
-            <Link to="/dashboard">Go To Your Dashboard</Link>
+            <Link to="/dashboard">{translations.goToDashBoard}</Link>
           </Button>
         </SignedIn>
         <SignedOut>
           <div className="flex gap-2 items-center justify-center">
             <Button asChild size="lg" className="bg-lime-600 hover:bg-lime-700">
-              <SignInButton />
+              <SignInButton>{translations.signIn}</SignInButton>
             </Button>
             <Button asChild size="lg">
-              <SignUpButton />
+              <SignUpButton>{translations.signUp}</SignUpButton>
             </Button>
           </div>
         </SignedOut>

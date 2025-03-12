@@ -16,13 +16,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { translations } from "@/data";
 import { Link, useRouter } from "@tanstack/react-router";
-
-import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { format, parseISO } from "date-fns";
 import { PencilIcon } from "lucide-react";
 import numeral from "numeral";
 
 import { useState } from "react";
+import { translateCategory } from "@/utils";
 
 export function AllTransactions({
   transactions,
@@ -50,19 +52,24 @@ export function AllTransactions({
     <Card className="mt-4">
       <CardHeader>
         <CardTitle className="flex justify-between">
-          <span>{format(selectedDate, "MMM yyyy")} Transactions</span>
-          <div className="flex gap-1">
+          <span className="capitalize">
+            {format(selectedDate, "MMM yyyy", { locale: es })} -{" "}
+            {translations.transactions}
+          </span>
+          <div className="flex gap-3">
             <Select
               value={selectedMonth.toString()}
               onValueChange={(value) => setSelectedMonth(Number(value))}
             >
-              <SelectTrigger>
+              <SelectTrigger className="capitalize">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {Array.from({ length: 12 }).map((_, i) => (
-                  <SelectItem value={`${i + 1}`} key={i}>
-                    {format(new Date(selectedDate.getFullYear(), i, 1), "MMM")}
+                  <SelectItem className="capitalize" value={`${i + 1}`} key={i}>
+                    {format(new Date(selectedDate.getFullYear(), i, 1), "MMM", {
+                      locale: es,
+                    })}
                   </SelectItem>
                 ))}
                 ;
@@ -83,7 +90,10 @@ export function AllTransactions({
                 ))}
               </SelectContent>
             </Select>
-            <Button asChild>
+            <Button
+              asChild
+              className="bg-[#166989] hover:bg-[#114a60] active:bg-[#0d3f53]"
+            >
               <Link
                 to="/dashboard/transactions"
                 search={{
@@ -91,81 +101,99 @@ export function AllTransactions({
                   year: selectedYear,
                 }}
               >
-                Go
+                {translations.go}
               </Link>
             </Button>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Button asChild>
-          <Link to="/dashboard/transactions/new">New Transaction</Link>
+        <Button
+          asChild
+          className="bg-[#166989] hover:bg-[#114a60] active:bg-[#0d3f53]"
+        >
+          <Link to="/dashboard/transactions/new">
+            {translations.newTransaction}
+          </Link>
         </Button>
         {!transactions.length && (
           <p className="text-center py-10 text-lg text-muted-foreground">
-            There are no transactions for this month
+            {translations.noTransactionsForMonth}
           </p>
         )}
         {!!transactions.length && (
-          <Table className="mt-4">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell>
-                    {format(transaction.transactionDate, "do MMM yyyy")}
-                  </TableCell>
-                  <TableCell>{transaction.description}</TableCell>
-                  <TableCell className="capitalize">
-                    <Badge
-                      className={
-                        transaction.transactionType === "income"
-                          ? "bg-lime-500"
-                          : "bg-orange-500"
-                      }
-                    >
-                      {transaction.transactionType}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{transaction.category}</TableCell>
-                  <TableCell>
-                    ${numeral(transaction.amount).format("0,0[.]00")}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      aria-label="Edit transaction"
-                      asChild
-                    >
-                      <Link
-                        onClick={() => {
-                          router.clearCache({
-                            filter: (route) =>
-                              route.pathname !==
-                              `/dashboard/transactions/${transaction.id}`,
-                          });
-                        }}
-                        to={`/dashboard/transactions/$transactionId`}
-                        params={{ transactionId: transaction.id.toString() }}
-                      >
-                        <PencilIcon />
-                      </Link>
-                    </Button>
-                  </TableCell>
+          <div className="overflow-y-auto max-h-[59vh] mt-5">
+            <Table className="mt-0">
+              <TableHeader className="sticky top-0 bg-white">
+                <TableRow>
+                  <TableHead>{translations.date}</TableHead>
+                  <TableHead>{translations.description}</TableHead>
+                  <TableHead>{translations.type}</TableHead>
+                  <TableHead>{translations.category}</TableHead>
+                  <TableHead>{translations.amount}</TableHead>
+                  <TableHead />
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody className="overflow-y-auto">
+                {transactions.map((transaction) => (
+                  <TableRow key={transaction.id}>
+                    <TableCell>
+                      {format(
+                        parseISO(transaction.transactionDate),
+                        "do MMM yyyy",
+                        {
+                          locale: es,
+                        }
+                      )}
+                    </TableCell>
+                    <TableCell>{transaction.description}</TableCell>
+                    <TableCell className="capitalize">
+                      <Badge
+                        className={`${
+                          transaction.transactionType === "income"
+                            ? "bg-[#90c147] hover:bg-[#90c147]"
+                            : "bg-orange-500 hover:bg-orange-500"
+                        } w-20 flex flex-row justify-center items-center`}
+                      >
+                        {transaction.transactionType === "income"
+                          ? translations.income
+                          : translations.expense}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {translateCategory(transaction.category)}
+                    </TableCell>
+                    <TableCell>
+                      {translations.currency}{" "}
+                      {numeral(transaction.amount).format("0,0[.]00")}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        aria-label="Edit transaction"
+                        asChild
+                      >
+                        <Link
+                          onClick={() => {
+                            router.clearCache({
+                              filter: (route) =>
+                                route.pathname !==
+                                `/dashboard/transactions/${transaction.id}`,
+                            });
+                          }}
+                          to={`/dashboard/transactions/$transactionId`}
+                          params={{ transactionId: transaction.id.toString() }}
+                        >
+                          <PencilIcon />
+                        </Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </CardContent>
     </Card>

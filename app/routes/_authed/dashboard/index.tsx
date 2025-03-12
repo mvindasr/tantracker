@@ -4,6 +4,7 @@ import {
   getAnnualCashflow,
   getRecentTransactions,
   getTransactionYearsRange,
+  translations,
 } from "@/data";
 import { Cashflow } from "./-cashflow";
 import { z } from "zod";
@@ -23,7 +24,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_authed/dashboard/")({
   pendingComponent: () => (
     <div className="px-20 mx-auto py-5">
-      <h1 className="text-4xl font-semibold pb-5">Dashboard</h1>
+      <h1 className="text-3xl font-semibold pb-5">{translations.dashboard}</h1>
       <LoadingSkeleton />
     </div>
   ),
@@ -54,8 +55,8 @@ function RouteComponent() {
   const { transactions, cashflow, yearsRange, cfyear } = Route.useLoaderData();
 
   return (
-    <div className="px-20 mx-auto py-5">
-      <h1 className="text-4xl font-semibold pb-5">Dashboard</h1>
+    <div className="px-20 mx-auto py-7">
+      <h1 className="text-3xl font-semibold pb-5">{translations.dashboard}</h1>
       <Cashflow
         yearsRage={yearsRange}
         year={cfyear}

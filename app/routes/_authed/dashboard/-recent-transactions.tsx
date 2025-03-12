@@ -9,8 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { translations } from "@/data";
+import { translateCategory } from "@/utils";
 import { Link } from "@tanstack/react-router";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 import numeral from "numeral";
 
 export function RecentTransactions({
@@ -29,13 +32,18 @@ export function RecentTransactions({
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between">
-          <span>Recent Transactions</span>
+          <span>{translations.recentTransactions}</span>
           <div className="flex gap-2">
             <Button asChild variant="outline">
-              <Link to="/dashboard/transactions">View All</Link>
+              <Link to="/dashboard/transactions">{translations.viewAll}</Link>
             </Button>
-            <Button asChild>
-              <Link to="/dashboard/transactions/new">Create New</Link>
+            <Button
+              asChild
+              className="bg-[#166989] hover:bg-[#114a60] active:bg-[#0d3f53]"
+            >
+              <Link to="/dashboard/transactions/new">
+                {translations.createNew}
+              </Link>
             </Button>
           </div>
         </CardTitle>
@@ -43,41 +51,52 @@ export function RecentTransactions({
       <CardContent>
         {!transactions.length && (
           <p className="text-center py-10 text-lg text-muted-foreground">
-            There are no transactions for this month
+            {translations.noTransactionsForMonth}
           </p>
         )}
         {!!transactions.length && (
-          <Table className="mt-4">
+          <Table className="mt-2">
             <TableHeader className="text-muted-background">
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Amount</TableHead>
+                <TableHead>{translations.date}</TableHead>
+                <TableHead>{translations.description}</TableHead>
+                <TableHead>{translations.type}</TableHead>
+                <TableHead>{translations.category}</TableHead>
+                <TableHead>{translations.amount}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {transactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>
-                    {format(transaction.transactionDate, "do MMM yyyy")}
+                    {format(
+                      parseISO(transaction.transactionDate),
+                      "do MMM yyyy",
+                      {
+                        locale: es,
+                      }
+                    )}
                   </TableCell>
                   <TableCell>{transaction.description}</TableCell>
                   <TableCell className="capitalize">
                     <Badge
-                      className={
+                      className={`${
                         transaction.transactionType === "income"
-                          ? "bg-lime-500"
-                          : "bg-orange-500"
-                      }
+                          ? "bg-[#90c147] hover:bg-[#90c147]"
+                          : "bg-orange-500 hover:bg-orange-500"
+                      } w-20 flex flex-row justify-center items-center`}
                     >
-                      {transaction.transactionType}
+                      {transaction.transactionType === "income"
+                        ? translations.income
+                        : translations.expense}
                     </Badge>
                   </TableCell>
-                  <TableCell>{transaction.category}</TableCell>
                   <TableCell>
-                    ${numeral(transaction.amount).format("0,0[.]00")}
+                    {translateCategory(transaction.category)}
+                  </TableCell>
+                  <TableCell>
+                    {translations.currency}{" "}
+                    {numeral(transaction.amount).format("0,0[.]00")}
                   </TableCell>
                 </TableRow>
               ))}

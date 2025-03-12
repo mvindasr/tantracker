@@ -17,11 +17,12 @@ import {
   deleteTransaction,
   getCategories,
   getTransaction,
+  translations,
   updateTransaction,
 } from "@/data";
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -34,7 +35,7 @@ export const Route = createFileRoute(
   errorComponent: () => {
     return (
       <div className="text-3xl text-muted-foreground py-10">
-        Oops! Transaction not found.
+        {translations.transactionNotFound}
       </div>
     );
   },
@@ -67,8 +68,8 @@ function RouteComponent() {
       },
     });
 
-    toast.message("Success!", {
-      description: "Transaction updated",
+    toast.message(translations.successToast, {
+      description: translations.transactionUpdated,
       closeButton: true,
       classNames: {
         toast: "!bg-green-600 !text-white !border-green-600",
@@ -94,8 +95,8 @@ function RouteComponent() {
       data: { transactionId: transaction.id },
     });
 
-    toast.message("Success!", {
-      description: "Transaction deleted",
+    toast.message(translations.successToast, {
+      description: translations.transactionDeleted,
       closeButton: true,
       classNames: {
         toast: "!bg-green-600 !text-white !border-green-600",
@@ -120,7 +121,7 @@ function RouteComponent() {
     <Card className="max-w-screen-md mt-4">
       <CardHeader>
         <CardTitle className="flex justify-between">
-          <span>Edit Transaction</span>
+          <span>{translations.editTransaction}</span>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" size="icon">
@@ -128,19 +129,20 @@ function RouteComponent() {
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>
+                {translations.deletedTransactionConfirmHeader}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This transaction will be
-                permanently deleted.
+                {translations.deletedTransactionConfirmDescription}
               </AlertDialogDescription>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>{translations.cancel}</AlertDialogCancel>
                 <Button
                   disabled={deleting}
                   onClick={handleDeleteConfirm}
                   variant="destructive"
                 >
-                  Delete
+                  {translations.delete}
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -161,6 +163,7 @@ function RouteComponent() {
                 (category) => category.id === transaction.categoryId
               )?.type ?? "income",
           }}
+          type="edit"
         />
       </CardContent>
     </Card>
