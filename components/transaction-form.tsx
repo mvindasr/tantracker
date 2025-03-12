@@ -22,8 +22,10 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { cn } from "@/lib/utils";
 import { addDays, format } from "date-fns";
+import { es } from "date-fns/locale";
 import { Input } from "./ui/input";
 import { categoriesTable } from "@/db/schema";
+import { categoryTranslations, translations } from "@/data";
 
 export const transactionFormSchema = z.object({
   transactionType: z.enum(["income", "expense"]),
@@ -42,6 +44,7 @@ export function TransactionForm({
   categories,
   onSubmit,
   defaultValues,
+  type,
 }: {
   categories: (typeof categoriesTable.$inferSelect)[];
   onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void>;
@@ -52,6 +55,7 @@ export function TransactionForm({
     description: string;
     transactionDate: Date;
   };
+  type: "create" | "edit";
 }) {
   // inferSelect includes the id (inferInset does not)
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -66,9 +70,12 @@ export function TransactionForm({
     },
   });
 
-  const filteredCategories = categories.filter(
-    (cat) => cat.type === form.getValues("transactionType")
-  );
+  const filteredCategories = categories
+    .filter((cat) => cat.type === form.getValues("transactionType"))
+    .map((cat) => ({
+      ...cat,
+      name: categoryTranslations[cat.name] || cat.name,
+    }));
 
   return (
     <Form {...form}>
@@ -84,15 +91,19 @@ export function TransactionForm({
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Transaction Type</FormLabel>
+                  <FormLabel>{translations.transactionType}</FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Transaction type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="income">Income</SelectItem>
-                        <SelectItem value="expense">Expense</SelectItem>
+                        <SelectItem value="income">
+                          {translations.income}
+                        </SelectItem>
+                        <SelectItem value="expense">
+                          {translations.expense}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -107,7 +118,7 @@ export function TransactionForm({
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>{translations.category}</FormLabel>
                   <FormControl>
                     <Select
                       value={field.value.toString()}
@@ -139,7 +150,7 @@ export function TransactionForm({
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Transaction Date</FormLabel>
+                  <FormLabel>{translations.transactionDate}</FormLabel>
                   <FormControl>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -152,9 +163,9 @@ export function TransactionForm({
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(field.value, "PPP", { locale: es })
                           ) : (
-                            <span>Pick a date</span>
+                            <span>{translations.pickDate}</span>
                           )}
                         </Button>
                       </PopoverTrigger>
@@ -164,6 +175,7 @@ export function TransactionForm({
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
+                          locale={es}
                           disabled={{
                             after: new Date(),
                           }}
@@ -182,7 +194,7 @@ export function TransactionForm({
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Amount</FormLabel>
+                  <FormLabel>{translations.amount}</FormLabel>
                   <FormControl>
                     <Input {...field} type="number" step={0.01} />
                   </FormControl>
@@ -202,7 +214,7 @@ export function TransactionForm({
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>{translations.description}</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -212,7 +224,13 @@ export function TransactionForm({
             }}
           />
           <Button type="submit">
-            {form.formState.isSubmitting ? "Submitting..." : "Submit"}
+            {form.formState.isSubmitting
+              ? type === "edit"
+                ? translations.submittingEdit
+                : translations.submittingCreate
+              : type === "edit"
+                ? translations.edit
+                : translations.submit}
           </Button>
         </fieldset>
       </form>

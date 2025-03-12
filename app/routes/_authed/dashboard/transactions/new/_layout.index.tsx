@@ -3,6 +3,7 @@ import {
   transactionFormSchema,
 } from "@/components/transaction-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { translations } from "@/data";
 import { createTransaction } from "@/data/createTransaction";
 import { getCategories } from "@/data/getCategories";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -35,8 +36,8 @@ function RouteComponent() {
       },
     });
 
-    toast.message("Success!", {
-      description: "Transaction created",
+    toast.message(translations.successToast, {
+      description: translations.transactionCreated,
       closeButton: true,
       classNames: {
         toast: "!bg-green-600 !text-white !border-green-600",
@@ -58,10 +59,14 @@ function RouteComponent() {
   return (
     <Card className="max-w-screen-md mt-4">
       <CardHeader>
-        <CardTitle>New Transaction</CardTitle>
+        <CardTitle>{translations.newTransaction}</CardTitle>
       </CardHeader>
       <CardContent>
-        <TransactionForm categories={categories} onSubmit={handleSubmit} />
+        <TransactionForm
+          categories={categories}
+          onSubmit={handleSubmit}
+          type="create"
+        />
       </CardContent>
     </Card>
   );

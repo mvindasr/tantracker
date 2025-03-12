@@ -29,6 +29,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { getSignedInUserId } from "@/data/getSignedInUserId";
 import { Toaster } from "@/components/ui/sonner";
+import { clerkLocalization, translations } from "@/data";
+import { esES } from "@clerk/localizations";
 
 export const Route = createRootRoute({
   pendingMs: 0,
@@ -86,7 +88,7 @@ function RootComponent() {
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const navigate = useNavigate();
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={esES}>
       <html>
         <head>
           <HeadContent />
@@ -94,17 +96,18 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <body>
           <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
             <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
-              <ChartColumnIcon className="text-lime-500" /> TanTracker
+              <ChartColumnIcon className="text-lime-500" />{" "}
+              {translations.appName}
             </Link>
             <div>
               <SignedOut>
                 <div className="text-white flex items-center">
                   <Button asChild variant="link" className="text-white">
-                    <SignInButton />
+                    <SignInButton>{translations.signIn}</SignInButton>
                   </Button>
                   <div className="w-[1px] h-8 bg-zinc-700" />
                   <Button asChild variant="link" className="text-white">
-                    <SignUpButton />
+                    <SignUpButton>{translations.signUp}</SignUpButton>
                   </Button>
                 </div>
               </SignedOut>
@@ -124,7 +127,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
                 >
                   <UserButton.MenuItems>
                     <UserButton.Action
-                      label="Dashboard"
+                      label={translations.dashboard}
                       labelIcon={<ChartColumnBigIcon size={16} />}
                       onClick={() => {
                         navigate({
