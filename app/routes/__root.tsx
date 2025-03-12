@@ -31,6 +31,7 @@ import { getSignedInUserId } from "@/data/getSignedInUserId";
 import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createRootRoute({
+  pendingMs: 0,
   notFoundComponent() {
     return (
       <div className="text-3xl text-center py-10 text-muted-foreground">
