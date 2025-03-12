@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import cover from "@/public/assets/appBg.png";
-import { ChartColumnBigIcon } from "lucide-react";
 import {
   SignedIn,
   SignedOut,
@@ -9,6 +8,7 @@ import {
 } from "@clerk/tanstack-start";
 import { Button } from "@/components/ui/button";
 import { translations } from "@/data";
+import logo from "@/public/assets/recetarioLogo.png";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -22,9 +22,9 @@ function RouteComponent() {
         alt=""
         className="absolute top-0 left-0 object-cover object-center size-full opacity-50"
       />
-      <div className="flex flex-col items-center justify-center relative z-10 gap-6">
-        <h1 className="text-5xl font-bold flex gap-1 items-center">
-          <ChartColumnBigIcon size={60} className="text-lime-500" />{" "}
+      <div className="flex flex-col items-center justify-center relative z-10 gap-5">
+        <h1 className="text-5xl font-bold flex gap-1 items-center pe-16">
+          <img src={logo} alt="Logo" className="h-24 pe-2" />{" "}
           {translations.appName}
         </h1>
         <p className="text-2xl w-96 text-center">

@@ -39,6 +39,7 @@ export const translations = {
   cancel: "Cancelar",
   delete: "Eliminar",
   transactionNotFound: "¡Oops! Transaccioòn no encontrada...",
+  pageNotFound: "¡Oops! Página no encontrada...",
   goToDashBoard: "Ir al Panel de Control",
   signIn: "Iniciar Sesión",
   signUp: "Registrarse",

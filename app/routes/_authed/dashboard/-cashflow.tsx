@@ -77,7 +77,7 @@ export function Cashflow({
           config={{
             income: {
               label: translations.incomes,
-              color: "#84cc16",
+              color: "#90c147",
             },
             expenses: {
               label: translations.expenses,
@@ -192,7 +192,7 @@ export function Cashflow({
             <h2
               className={cn(
                 "text-3xl font-bold",
-                balance >= 0 ? "text-lime-500" : "text-orange-500"
+                balance >= 0 ? "text-[#90c147]" : "text-orange-500"
               )}
             >
               {translations.currency} {numeral(balance).format("0,0[.]00")}

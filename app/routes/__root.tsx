@@ -17,7 +17,7 @@ import poppins600 from "@fontsource/poppins/600.css?url";
 import poppins700 from "@fontsource/poppins/700.css?url";
 import poppins800 from "@fontsource/poppins/800.css?url";
 import poppins900 from "@fontsource/poppins/900.css?url";
-import { ChartColumnBigIcon, ChartColumnIcon } from "lucide-react";
+import { ChartColumnBigIcon } from "lucide-react";
 import {
   ClerkProvider,
   SignedIn,
@@ -29,15 +29,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { getSignedInUserId } from "@/data/getSignedInUserId";
 import { Toaster } from "@/components/ui/sonner";
-import { clerkLocalization, translations } from "@/data";
+import { translations } from "@/data";
 import { esES } from "@clerk/localizations";
+import logo from "@/public/assets/recetarioLogo.png";
 
 export const Route = createRootRoute({
   pendingMs: 0,
   notFoundComponent() {
     return (
       <div className="text-3xl text-center py-10 text-muted-foreground">
-        Oops! Page not found
+        {translations.pageNotFound}
       </div>
     );
   },
@@ -96,7 +97,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <body>
           <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
             <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
-              <ChartColumnIcon className="text-lime-500" />{" "}
+              <img src={logo} alt="Logo" className="h-12 pe-1" />
               {translations.appName}
             </Link>
             <div>

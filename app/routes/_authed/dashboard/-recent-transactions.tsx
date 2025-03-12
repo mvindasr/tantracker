@@ -12,7 +12,8 @@ import {
 import { translations } from "@/data";
 import { translateCategory } from "@/utils";
 import { Link } from "@tanstack/react-router";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 import numeral from "numeral";
 
 export function RecentTransactions({
@@ -36,7 +37,10 @@ export function RecentTransactions({
             <Button asChild variant="outline">
               <Link to="/dashboard/transactions">{translations.viewAll}</Link>
             </Button>
-            <Button asChild>
+            <Button
+              asChild
+              className="bg-[#166989] hover:bg-[#114a60] active:bg-[#0d3f53]"
+            >
               <Link to="/dashboard/transactions/new">
                 {translations.createNew}
               </Link>
@@ -65,15 +69,21 @@ export function RecentTransactions({
               {transactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>
-                    {format(transaction.transactionDate, "do MMM yyyy")}
+                    {format(
+                      parseISO(transaction.transactionDate),
+                      "do MMM yyyy",
+                      {
+                        locale: es,
+                      }
+                    )}
                   </TableCell>
                   <TableCell>{transaction.description}</TableCell>
                   <TableCell className="capitalize">
                     <Badge
                       className={`${
                         transaction.transactionType === "income"
-                          ? "bg-lime-500"
-                          : "bg-orange-500"
+                          ? "bg-[#90c147] hover:bg-[#90c147]"
+                          : "bg-orange-500 hover:bg-orange-500"
                       } w-20 flex flex-row justify-center items-center`}
                     >
                       {transaction.transactionType === "income"
